@@ -1,4 +1,4 @@
-# rune
+# Rune
 
 **rune** is a universal script runner with a pluggable Lua-based execution system. It detects the script type by file extension, loads the corresponding Lua plugin, and executes the script. It also includes minimal script and plugin management capabilities.
 
