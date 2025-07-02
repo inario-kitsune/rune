@@ -95,3 +95,5 @@ go.work.sum
 # env file
 .env
 .zed
+dist
+*.sh
