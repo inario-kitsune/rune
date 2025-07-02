@@ -25,7 +25,7 @@ var PluginNewCommand = &cli.Command{
 		if _, err := os.Stat(path); err == nil {
 			return cli.Exit("Plugin already exists", 1)
 		}
-		content := fmt.Sprintf("--[[ rune-meta\nname: %s Plugin\next: []\n]]\nprint('[plugin:%s] Running:\",target)\n", strings.ToUpper(name), name)
+		content := fmt.Sprintf("--[[ rune-meta\nname: %s Plugin\next: []\n]]\nprint('[plugin:%s] Running:',target)\n", strings.ToUpper(name), name)
 		os.WriteFile(path, []byte(content), 0644)
 
 		return util.OpenWithEditor(path)

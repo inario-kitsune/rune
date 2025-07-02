@@ -12,7 +12,7 @@ import (
 
 func init() {
 	log.SetOutput(os.Stderr)
-	log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.InfoLevel)
 	if level := os.Getenv("RUNE_LOG"); level != "" {
 		switch level {
 		case "error":
