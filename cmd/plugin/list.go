@@ -3,8 +3,6 @@ package plugin
 import (
 	"context"
 	"fmt"
-	"path/filepath"
-	"strings"
 
 	"github.com/charmbracelet/log"
 	"github.com/inario-kitsune/rune/plugin"
@@ -61,13 +59,12 @@ var PluginListCommand = &cli.Command{
 			log.Debug("Creating unique plugin name set", "initial_capacity", pluginCount)
 
 			for ext, plugin := range plugins {
-				name := strings.TrimSuffix(filepath.Base(plugin.Path), ".lua")
+				name := plugin.Name()
 				nameSet[name] = struct{}{}
 				log.Debug("Added plugin to name set",
 					"extension", ext,
 					"plugin_name", plugin.Name,
-					"file_name", name,
-					"path", plugin.Path)
+					"file_name", name)
 			}
 
 			uniqueCount := len(nameSet)
@@ -82,39 +79,24 @@ var PluginListCommand = &cli.Command{
 		} else {
 			log.Debug("Using table output mode")
 
-			header := []string{"Extension", "Name", "File"}
+			header := []string{"Extension", "Name", "Path"}
 			var rows [][]string
 
 			log.Debug("Building table data", "header", header)
 
-			builtinCount := 0
-			userPluginCount := 0
-
 			for ext, plugin := range plugins {
-				source := "builtin:"
-				if !strings.HasPrefix(plugin.Path, "builtin:") {
-					source = ""
-					userPluginCount++
-				} else {
-					builtinCount++
-				}
-
-				fileName := source + filepath.Base(plugin.Path)
-				row := []string{ext, plugin.Name, fileName}
+				fileName := plugin.Name()
+				row := []string{ext, plugin.Name(), plugin.GetPath()}
 				rows = append(rows, row)
 
 				log.Debug("Added plugin to table",
 					"extension", ext,
 					"plugin_name", plugin.Name,
-					"file_name", fileName,
-					"is_builtin", strings.HasPrefix(plugin.Path, "builtin:"),
-					"path", plugin.Path)
+					"file_name", fileName)
 			}
 
 			log.Info("Table data prepared",
-				"total_rows", len(rows),
-				"builtin_plugins", builtinCount,
-				"user_plugins", userPluginCount)
+				"total_rows", len(rows))
 
 			log.Debug("Outputting plugin table")
 			util.PrintTable(header, rows)

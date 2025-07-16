@@ -31,7 +31,7 @@ func init() {
 func main() {
 	app := &cli.Command{
 		Name:                  "rune",
-		Version:               "0.2.0",
+		Version:               "0.3.0",
 		Usage:                 "Universal script runner with Lua plugin engine",
 		EnableShellCompletion: true,
 		Commands: []*cli.Command{

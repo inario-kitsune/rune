@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
 
-	lua "github.com/yuin/gopher-lua"
+	"github.com/charmbracelet/log"
 	"gopkg.in/yaml.v3"
 )
 
-var pluginMap = map[string]*Plugin{}
+var pluginMap = map[string]IPlugin{}
 
 var metaBlockRegex = regexp.MustCompile(`(?s)--\[\[\s*rune-meta(.*?)\]\]`)
 
@@ -25,6 +26,7 @@ func LoadPlugins(dir string) error {
 		if err != nil || d.IsDir() || !strings.HasSuffix(path, ".lua") {
 			return nil
 		}
+		log.Debug("loading plugin file", "path", path)
 		plugin, err := extractMeta(path)
 		if err != nil {
 			return fmt.Errorf("plugin %s error: %w", path, err)
@@ -36,8 +38,10 @@ func LoadPlugins(dir string) error {
 		return nil
 	})
 }
-func extractMeta(path string) (*Plugin, error) {
+func extractMeta(path string) (*LuaPlugin, error) {
 	data, err := os.ReadFile(path)
+	log.Debug("plugin metadata", "data", string(data))
+
 	if err != nil {
 		return nil, err
 	}
@@ -45,62 +49,29 @@ func extractMeta(path string) (*Plugin, error) {
 	if matches == nil {
 		return nil, errors.New("missing rune-meta block")
 	}
-	var p Plugin
+	log.Debug("plugin metadata", "matches", string(matches[1]))
+	var p LuaPlugin
 	if err := yaml.Unmarshal(matches[1], &p); err != nil {
 		return nil, fmt.Errorf("yaml error: %w", err)
 	}
-	p.Execute = func(targetScript string, args []string) error {
-		L := lua.NewState()
-		defer L.Close()
-		L.SetGlobal("target", lua.LString(targetScript))
-		luaArgs := L.NewTable()
-		for i, arg := range args {
-			L.RawSet(luaArgs, lua.LNumber(i+1), lua.LString(arg))
-		}
-		L.SetGlobal("args", luaArgs)
-		return L.DoFile(p.Path)
-	}
+	log.Debug("loading plugin", "plugin.name", p.Name(), "plugin.name", p.Exts)
 	return &p, nil
 }
 
-func GetPluginByExt(ext string) *Plugin {
+func GetPluginByExt(ext string) IPlugin {
 	return pluginMap[ext]
 }
-func GetPluginList() map[string]*Plugin {
+func GetPluginList() map[string]IPlugin {
 	return pluginMap
 }
-
-func registerPluginFromBytes(content []byte, virtualPath string) error {
-	matches := metaBlockRegex.FindSubmatch(content)
-	if matches == nil {
-		return fmt.Errorf("missing rune-meta block in %s", virtualPath)
-	}
-
-	var p Plugin
-	if err := yaml.Unmarshal(matches[1], &p); err != nil {
-		return fmt.Errorf("yaml error in %s: %w", virtualPath, err)
-	}
-	// 设置 Path 字段为虚拟路径（可选）
-	p.Path = "builtin:" + virtualPath
-
-	// 自定义 Execute 使用内存代码运行
-	code := string(content)
-	p.Execute = func(targetScript string, args []string) error {
-		L := lua.NewState()
-		defer L.Close()
-		L.SetGlobal("target", lua.LString(targetScript))
-		luaArgs := L.NewTable()
-		for i, arg := range args {
-			L.RawSet(luaArgs, lua.LNumber(i+1), lua.LString(arg))
-		}
-		L.SetGlobal("args", luaArgs)
-		return L.DoString(code)
-	}
-
-	for _, ext := range p.Exts {
-		if _, ok := pluginMap[ext]; !ok {
-			pluginMap[ext] = &p
-		}
-	}
+func loadEmbeddedPlugins() error {
+	pluginMap["lua"] = NewBuiltinPlugin("lua", []string{"lua"}, func(target string, args []string) error {
+		allArgs := append([]string{target}, args...)
+		cmd := exec.Command("lua", allArgs...)
+		cmd.Stderr = cmd.Stdout
+		out, err := cmd.CombinedOutput()
+		fmt.Println(string(out))
+		return err
+	})
 	return nil
 }

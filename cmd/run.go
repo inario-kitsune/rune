@@ -80,7 +80,7 @@ var RunCommand = &cli.Command{
 		log.Debug("Script arguments", "args", args)
 
 		log.Info("Executing script", "file", scriptFile, "args", args)
-		if err := plugin.Execute(scriptFile, args); err != nil {
+		if err := plugin.Run(scriptFile, args); err != nil {
 			log.Error("Script execution failed", "error", err, "file", scriptFile)
 			return err
 		}

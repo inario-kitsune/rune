@@ -1,22 +1,28 @@
 package plugin
 
 import (
-	"embed"
-	"io/fs"
+	"slices"
 )
 
-//go:embed plugins/*.lua
-var embededPlugins embed.FS
+type BuiltinPlugin struct {
+	PluginName string
+	Exts       []string
+	Cmd        func(target string, args []string) error
+}
 
-func loadEmbeddedPlugins() error {
-	return fs.WalkDir(embededPlugins, "plugins", func(path string, d fs.DirEntry, err error) error {
-		if err != nil || d.IsDir() {
-			return nil
-		}
-		content, err := embededPlugins.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		return registerPluginFromBytes(content, path)
-	})
+func NewBuiltinPlugin(name string, exts []string, exec func(target string, args []string) error) *BuiltinPlugin {
+	return &BuiltinPlugin{name, exts, exec}
+
+}
+func (p *BuiltinPlugin) Name() string {
+	return p.PluginName
+}
+func (p *BuiltinPlugin) GetPath() string {
+	return "builtin"
+}
+func (p *BuiltinPlugin) Supports(ext string) bool {
+	return slices.Contains(p.Exts, ext)
+}
+func (p *BuiltinPlugin) Run(target string, args []string) error {
+	return p.Cmd(target, args)
 }

@@ -7,8 +7,9 @@ import (
 )
 
 type PluginMeta struct {
-	Name string   `yaml:"name"`
-	Exts []string `yaml:"ext"`
+	PluginName string   `yaml:"name"`
+	Exts       []string `yaml:"ext"`
+	Path       string   `yaml:"-"`
 }
 
 func main() {
@@ -18,6 +19,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(m.Name) // OK
-	fmt.Println(m.Exts) // [py pyw]
+	fmt.Println(m.PluginName) // OK
+	fmt.Println(m.Exts)       // [py pyw]
 }
