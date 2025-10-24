@@ -1,0 +1,21 @@
+# Rust build artifacts
+/target
+debug/
+*.pdb
+
+# Cargo
+Cargo.lock
+**/*.rs.bk
+*.orig
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Runtime data
+*.log
+*.dat

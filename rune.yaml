@@ -1,0 +1,201 @@
+name: rune
+description: Universal script runner
+commands:
+  - name: run
+    aliases: ["r"]
+    description: Run a script with optional arguments
+    flags:
+      - name: extension
+        shorthand: x
+        description: Specify script extension
+        takesArg: true
+      - name: plugin
+        shorthand: p
+        description: Specify plugin to use (overrides auto-detection)
+        takesArg: true
+    positional:
+      - description: Name of the script to run
+        completion:
+          callback:
+            exec:
+              [
+                "sh",
+                "-c",
+                "rune script list --plain 2>/dev/null | sed 's/\\..*//' | sort -u",
+              ]
+      - description: Arguments to pass to the script (use -- to separate from rune args)
+        optionalRepeated: true
+    completion:
+      flag:
+        extension:
+          callback:
+            exec:
+              [
+                "sh",
+                "-c",
+                "rune script list --plain 2>/dev/null | sed 's/.*\\.//;t;d' | sort -u",
+              ]
+        plugin:
+          callback:
+            exec:
+              [
+                "sh",
+                "-c",
+                "rune plugin list --plain 2>/dev/null",
+              ]
+
+  - name: script
+    aliases: ["s"]
+    description: Manage scripts (add, remove, list, create new)
+    commands:
+      - name: add
+        aliases: ["a"]
+        description: Add a script from file path
+        flags:
+          - name: force
+            shorthand: f
+            description: Force overwrite if script already exists
+        positional:
+          - description: Path to the script file
+            completion:
+              callback:
+                exec: ["sh", "-c", "fd --type f --executable"]
+                style: files
+
+      - name: remove
+        aliases: ["rm", "delete"]
+        description: Remove a script by name
+        flags:
+          - name: yes
+            shorthand: y
+            description: Skip confirmation prompt
+          - name: extension
+            shorthand: x
+            description: Specify script extension
+            takesArg: true
+        positional:
+          - description: Name of the script to remove
+            completion:
+              callback:
+                exec: ["sh", "-c", "rune script list --plain 2>/dev/null"]
+        completion:
+          flag:
+            extension:
+              callback:
+                exec:
+                  [
+                    "sh",
+                    "-c",
+                    "rune script list --plain 2>/dev/null | sed 's/.*\\.//;t;d' | sort -u",
+                  ]
+
+      - name: list
+        aliases: ["ls", "l"]
+        description: List all available scripts
+        flags:
+          - name: plain
+            shorthand: "1"
+            description: Display in plain text format (one per line)
+
+      - name: new
+        aliases: ["n"]
+        description: Create a new script from template
+        positional:
+          - description: Name for the new script
+
+      - name: edit
+        aliases: ["e"]
+        description: Edit an existing script
+        flags:
+          - name: extension
+            shorthand: x
+            description: Specify script extension
+            takesArg: true
+        positional:
+          - description: Name of the script to edit
+            completion:
+              callback:
+                exec:
+                  [
+                    "sh",
+                    "-c",
+                    "rune script list --plain 2>/dev/null | sed 's/\\..*//' | sort -u",
+                  ]
+        completion:
+          flag:
+            extension:
+              callback:
+                exec:
+                  [
+                    "sh",
+                    "-c",
+                    "rune script list --plain 2>/dev/null | sed 's/.*\\.//;t;d' | sort -u",
+                  ]
+
+  - name: plugin
+    aliases: ["p"]
+    description: Manage plugins (add, remove, list)
+    commands:
+      - name: add
+        aliases: ["a"]
+        description: Add a plugin from file path
+        flags:
+          - name: force
+            shorthand: f
+            description: Force overwrite if plugin already exists
+        positional:
+          - description: Path to the plugin file
+            completion:
+              callback:
+                exec:
+                  ["sh", "-c", "fd --type f --extension yaml --extension yml"]
+                style: files
+
+      - name: remove
+        aliases: ["rm", "delete"]
+        description: Remove a plugin by name
+        flags:
+          - name: yes
+            shorthand: y
+            description: Skip confirmation prompt
+        positional:
+          - description: Name of the plugin to remove
+            completion:
+              callback:
+                exec: ["sh", "-c", "rune plugin list --plain 2>/dev/null"]
+
+      - name: list
+        aliases: ["ls", "l"]
+        description: List all installed plugins
+        flags:
+          - name: plain
+            shorthand: "1"
+            description: Display in plain text format (one per line)
+
+      - name: info
+        aliases: ["i"]
+        description: Show plugin info
+        positional:
+          - description: Name of the plugin
+            completion:
+              callback:
+                exec: ["sh", "-c", "rune plugin list --plain 2>/dev/null"]
+
+      - name: export
+        aliases: ["e"]
+        description: Export plugin
+        flags:
+          - name: output
+            shorthand: o
+            description: Output file path
+            takesArg: true
+        positional:
+          - description: Name of the plugin
+            completion:
+              callback:
+                exec: ["sh", "-c", "rune plugin list --plain 2>/dev/null"]
+        completion:
+          flag:
+            output:
+              callback:
+                style: files
