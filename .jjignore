@@ -20,5 +20,5 @@ Cargo.lock
 *.log
 *.dat
 
-# Jujutsu VCS
-.jj/
+# Git
+.git/
