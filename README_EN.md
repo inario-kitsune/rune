@@ -267,75 +267,6 @@ export RUNE_REPO=/custom/path/to/scripts
 export RUNE_PLUGIN=/custom/path/to/plugin
 ```
 
-## 🎨 Use Cases
-
-### 1. Personal Script Library
-
-Centrally manage all frequently-used scripts:
-
-```bash
-rune script add ~/backup-database.sh
-rune script add ~/deploy-website.py
-rune script add ~/clean-logs.sh
-
-# Access anywhere
-rune run backup-database
-rune run deploy-website
-```
-
-### 2. Multi-Language Projects
-
-Use multiple scripting languages in one project:
-
-```bash
-rune run preprocess-data    # Python script
-rune run build-assets       # Shell script
-rune run analyze-results    # R script
-```
-
-### 3. Team Collaboration
-
-Export and share plugin configurations:
-
-```bash
-# Export plugin
-rune plugin export python -o python.yaml
-
-# Team members import
-rune plugin add python.yaml
-```
-
-## 🧪 Testing
-
-Rune has a comprehensive test suite:
-
-```bash
-# Run all tests
-cargo test
-
-# Run unit tests only
-cargo test --lib
-
-# Run specific test
-cargo test test_load_scripts
-
-# Show test output
-cargo test -- --nocapture
-```
-
-Test Statistics:
-- **Total Tests**: 36
-- **Pass Rate**: 100%
-- **Coverage**: core/script, core/plugin, core/executor
-
-See [TESTING.md](./TESTING.md) for testing strategy.
-
-## ⚙️ Configuration
-
-### Shell Completion
-
-Rune supports shell completion (configured via `rune.yaml`).
-
 ## 📄 License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details
@@ -362,33 +293,9 @@ limitations under the License.
 - [serde](https://github.com/serde-rs/serde) - Serialization/deserialization
 - [anyhow](https://github.com/dtolnay/anyhow) - Error handling
 
-## 📮 Contact
-
-- Author: Yoikitsune
-- Project Link: [https://github.com/yourusername/rune-rs](https://github.com/yourusername/rune-rs)
-
-## 🗺 Roadmap
-
-### v0.6.0 (Planned)
-- [ ] Script search functionality
-- [ ] Environment variable injection
-- [ ] Script template system
-
-### v0.7.0 (Planned)
-- [ ] Remote script repository support
-- [ ] Script execution history
-- [ ] Dry-run mode
-
-### v1.0.0 (Long-term)
-- [ ] Plugin marketplace
-- [ ] Web UI
-- [ ] Script dependency management
-
 ---
 
 <div align="center">
-
-**If this project helps you, please give it a ⭐️!**
 
 Made with ❤️ by Yoikitsune
 

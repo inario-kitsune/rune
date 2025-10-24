@@ -267,75 +267,6 @@ export RUNE_REPO=/custom/path/to/scripts
 export RUNE_PLUGIN=/custom/path/to/plugin
 ```
 
-## 🎨 使用场景
-
-### 1. 个人脚本库
-
-将所有常用脚本集中管理：
-
-```bash
-rune script add ~/backup-database.sh
-rune script add ~/deploy-website.py
-rune script add ~/clean-logs.sh
-
-# 随处可用
-rune run backup-database
-rune run deploy-website
-```
-
-### 2. 多语言项目
-
-在一个项目中使用多种脚本语言：
-
-```bash
-rune run preprocess-data    # Python 脚本
-rune run build-assets       # Shell 脚本
-rune run analyze-results    # R 脚本
-```
-
-### 3. 团队协作
-
-导出和分享插件配置：
-
-```bash
-# 导出插件
-rune plugin export python -o python.yaml
-
-# 团队成员导入
-rune plugin add python.yaml
-```
-
-## 🧪 测试
-
-Rune 拥有完整的测试套件：
-
-```bash
-# 运行所有测试
-cargo test
-
-# 运行单元测试
-cargo test --lib
-
-# 运行特定测试
-cargo test test_load_scripts
-
-# 查看测试输出
-cargo test -- --nocapture
-```
-
-测试统计：
-- **总测试数**: 36
-- **通过率**: 100%
-- **覆盖模块**: core/script, core/plugin, core/executor
-
-详见 [TESTING.md](./TESTING.md) 了解测试策略。
-
-## ⚙️ 配置
-
-### Shell 自动补全
-
-Rune 支持 shell 自动补全（通过 `rune.yaml` 配置）。
-
 ## 📄 许可证
 
 本项目采用 Apache License 2.0 许可证 - 详见 [LICENSE](LICENSE) 文件
@@ -362,33 +293,9 @@ limitations under the License.
 - [serde](https://github.com/serde-rs/serde) - 序列化/反序列化
 - [anyhow](https://github.com/dtolnay/anyhow) - 错误处理
 
-## 📮 联系方式
-
-- 作者: Yoikitsune
-- 项目链接: [https://github.com/yourusername/rune-rs](https://github.com/yourusername/rune-rs)
-
-## 🗺 路线图
-
-### v0.6.0 (计划中)
-- [ ] 脚本搜索功能
-- [ ] 环境变量注入
-- [ ] 脚本模板系统
-
-### v0.7.0 (计划中)
-- [ ] 远程脚本仓库支持
-- [ ] 脚本执行历史
-- [ ] 干运行模式
-
-### v1.0.0 (长期目标)
-- [ ] 插件商店
-- [ ] Web UI
-- [ ] 脚本依赖管理
-
 ---
 
 <div align="center">
-
-**如果这个项目对你有帮助，请给一个 ⭐️！**
 
 Made with ❤️ by Yoikitsune
 
