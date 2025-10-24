@@ -26,8 +26,8 @@
 ### 从源码构建
 
 ```bash
-git clone https://github.com/yourusername/rune-rs.git
-cd rune-rs
+git clone https://github.com/inario-kitsune/rune.git
+cd rune
 cargo build --release
 sudo cp target/release/rune /usr/local/bin/
 ```
