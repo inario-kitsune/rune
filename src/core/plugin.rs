@@ -66,6 +66,45 @@ impl Plugin {
         serde_yaml::to_string(self).context("Failed to serialize plugin to YAML")
     }
 
+    /// 从 TOML 字符串解析插件
+    ///
+    /// # 参数
+    /// * `toml_str` - TOML 格式的插件定义
+    ///
+    /// # 返回
+    /// 解析后的插件对象
+    ///
+    /// # 错误
+    /// - TOML 格式错误
+    /// - 缺少必填字段（name, executor, extensions）
+    pub fn from_toml(toml_str: &str) -> Result<Self> {
+        let plugin: Plugin = toml::from_str(toml_str).context("Failed to parse plugin TOML")?;
+
+        // 验证必填字段
+        if plugin.name.is_empty() {
+            anyhow::bail!("Plugin name cannot be empty");
+        }
+        if plugin.executor.is_empty() {
+            anyhow::bail!("Plugin executor cannot be empty");
+        }
+        if plugin.extensions.is_empty() {
+            anyhow::bail!("Plugin must support at least one extension");
+        }
+
+        Ok(plugin)
+    }
+
+    /// 将插件序列化为 TOML 字符串
+    ///
+    /// # 返回
+    /// TOML 格式的插件定义字符串
+    ///
+    /// # 错误
+    /// 序列化失败时返回错误
+    pub fn to_toml(&self) -> Result<String> {
+        toml::to_string_pretty(self).context("Failed to serialize plugin to TOML")
+    }
+
     /// 验证插件的执行器和依赖是否可用
     ///
     /// 注意：此方法只会打印警告，不会返回错误
@@ -536,5 +575,156 @@ extensions: []
         db.add_plugin(plugin2).unwrap();
 
         assert_eq!(db.all_plugins().count(), 2);
+    }
+
+    fn sample_plugin_toml() -> &'static str {
+        r#"
+name = "python"
+executor = "python3"
+arg_template = ["{file}"]
+extensions = ["py"]
+description = "Python 3 interpreter"
+author = "Test Author"
+version = "1.0.0"
+requires = ["python3"]
+"#
+    }
+
+    #[test]
+    fn test_plugin_from_toml_valid() {
+        let plugin = Plugin::from_toml(sample_plugin_toml()).unwrap();
+
+        assert_eq!(plugin.name, "python");
+        assert_eq!(plugin.executor, "python3");
+        assert_eq!(plugin.arg_template, vec!["{file}"]);
+        assert_eq!(plugin.extensions, vec!["py"]);
+        assert_eq!(plugin.description, "Python 3 interpreter");
+        assert_eq!(plugin.author, "Test Author");
+        assert_eq!(plugin.version, "1.0.0");
+        assert_eq!(plugin.requires, vec!["python3"]);
+    }
+
+    #[test]
+    fn test_plugin_from_toml_minimal() {
+        let toml = r#"
+name = "bash"
+executor = "bash"
+extensions = ["sh"]
+"#;
+        let plugin = Plugin::from_toml(toml).unwrap();
+
+        assert_eq!(plugin.name, "bash");
+        assert_eq!(plugin.executor, "bash");
+        assert_eq!(plugin.extensions, vec!["sh"]);
+        // Optional fields should have defaults
+        assert_eq!(plugin.description, "");
+        assert_eq!(plugin.author, "");
+        assert_eq!(plugin.version, "");
+        assert!(plugin.requires.is_empty());
+        assert_eq!(plugin.arg_template, vec!["{file}"]);
+    }
+
+    #[test]
+    fn test_plugin_from_toml_missing_name() {
+        let toml = r#"
+name = ""
+executor = "python3"
+extensions = ["py"]
+"#;
+        let result = Plugin::from_toml(toml);
+
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("Plugin name cannot be empty"));
+    }
+
+    #[test]
+    fn test_plugin_from_toml_missing_executor() {
+        let toml = r#"
+name = "python"
+executor = ""
+extensions = ["py"]
+"#;
+        let result = Plugin::from_toml(toml);
+
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("Plugin executor cannot be empty"));
+    }
+
+    #[test]
+    fn test_plugin_from_toml_missing_extensions() {
+        let toml = r#"
+name = "python"
+executor = "python3"
+extensions = []
+"#;
+        let result = Plugin::from_toml(toml);
+
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("Plugin must support at least one extension"));
+    }
+
+    #[test]
+    fn test_plugin_from_toml_invalid_toml() {
+        let toml = "invalid toml content [[[";
+        let result = Plugin::from_toml(toml);
+
+        assert!(result.is_err());
+        assert!(result.unwrap_err().to_string().contains("Failed to parse plugin TOML"));
+    }
+
+    #[test]
+    fn test_plugin_to_toml() {
+        let plugin = Plugin {
+            name: "test".to_string(),
+            executor: "test-exec".to_string(),
+            arg_template: vec!["{file}".to_string()],
+            extensions: vec!["test".to_string()],
+            description: "Test plugin".to_string(),
+            author: "Author".to_string(),
+            version: "1.0".to_string(),
+            requires: vec!["dep1".to_string()],
+        };
+
+        let toml = plugin.to_toml().unwrap();
+
+        assert!(toml.contains("name = \"test\""));
+        assert!(toml.contains("executor = \"test-exec\""));
+        assert!(toml.contains("test"));
+    }
+
+    #[test]
+    fn test_plugin_toml_roundtrip() {
+        let original = Plugin::from_toml(sample_plugin_toml()).unwrap();
+        let toml = original.to_toml().unwrap();
+        let reconstructed = Plugin::from_toml(&toml).unwrap();
+
+        assert_eq!(original.name, reconstructed.name);
+        assert_eq!(original.executor, reconstructed.executor);
+        assert_eq!(original.extensions, reconstructed.extensions);
+        assert_eq!(original.description, reconstructed.description);
+        assert_eq!(original.version, reconstructed.version);
+    }
+
+    #[test]
+    fn test_plugin_yaml_toml_interop() {
+        // Test that a plugin can be created from YAML and exported to TOML
+        let yaml_plugin = Plugin::from_yaml(sample_plugin_yaml()).unwrap();
+        let toml_str = yaml_plugin.to_toml().unwrap();
+        let toml_plugin = Plugin::from_toml(&toml_str).unwrap();
+
+        assert_eq!(yaml_plugin.name, toml_plugin.name);
+        assert_eq!(yaml_plugin.executor, toml_plugin.executor);
+        assert_eq!(yaml_plugin.extensions, toml_plugin.extensions);
+        assert_eq!(yaml_plugin.version, toml_plugin.version);
+
+        // Test that a plugin can be created from TOML and exported to YAML
+        let toml_plugin2 = Plugin::from_toml(sample_plugin_toml()).unwrap();
+        let yaml_str = toml_plugin2.to_yaml().unwrap();
+        let yaml_plugin2 = Plugin::from_yaml(&yaml_str).unwrap();
+
+        assert_eq!(toml_plugin2.name, yaml_plugin2.name);
+        assert_eq!(toml_plugin2.executor, yaml_plugin2.executor);
+        assert_eq!(toml_plugin2.extensions, yaml_plugin2.extensions);
+        assert_eq!(toml_plugin2.version, yaml_plugin2.version);
     }
 }

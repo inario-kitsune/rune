@@ -1,0 +1,12 @@
+# Bash - Bourne Again SHell
+# The GNU Project's shell, standard on most Unix/Linux systems
+# Docs: https://www.gnu.org/software/bash/
+
+name = "bash"
+executor = "bash"
+arg_template = ["{file}"]
+extensions = ["sh", "bash"]
+description = "Bash shell interpreter - Bourne Again SHell"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["bash"]

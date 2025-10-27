@@ -1,0 +1,15 @@
+# Python 3 - Standard Python interpreter
+# A powerful, versatile programming language
+# Install: https://www.python.org/downloads/
+# - macOS: brew install python3
+# - Ubuntu/Debian: sudo apt install python3
+# - Fedora: sudo dnf install python3
+
+name = "python"
+executor = "python3"
+arg_template = ["{file}"]
+extensions = ["py"]
+description = "Python 3 interpreter - standard CPython implementation"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["python3"]

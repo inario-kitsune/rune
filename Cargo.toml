@@ -1,6 +1,6 @@
 [package]
 name = "rune"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2024"
 authors = ["Yoikitsune"]
 description = "Universal script runner"
@@ -17,6 +17,7 @@ clap = { version = "4.5.50", features = ["derive"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_yaml = "0.9.34"
 tabled = "0.20.0"
+toml = "0.8.19"
 which = "8.0.0"
 
 [dev-dependencies]

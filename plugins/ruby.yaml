@@ -1,0 +1,11 @@
+name: ruby
+executor: ruby
+arg_template:
+  - "{file}"
+extensions:
+  - rb
+description: Ruby script executor
+author: Yoikitsune
+version: 1.0.0
+requires:
+  - ruby

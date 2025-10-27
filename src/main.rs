@@ -41,8 +41,8 @@ fn main() {
                     eprintln!("Error: {:#}", e)
                 }
             }
-            commands::PluginCommands::Export { name, output } => {
-                if let Err(e) = plugin::export(name, output) {
+            commands::PluginCommands::Export { name, output, format } => {
+                if let Err(e) = plugin::export(name, output, format) {
                     eprintln!("Error: {:#}", e)
                 }
             }

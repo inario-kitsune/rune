@@ -1,0 +1,15 @@
+# Deno - A modern runtime for JavaScript and TypeScript
+# Secure by default, built with Rust and V8
+# Install: https://deno.land/#installation
+# - macOS/Linux: curl -fsSL https://deno.land/install.sh | sh
+# - Windows: iwr https://deno.land/install.ps1 -useb | iex
+# - Cargo: cargo install deno
+
+name = "deno"
+executor = "deno"
+arg_template = ["run", "--allow-all", "{file}"]
+extensions = ["ts", "js"]
+description = "Deno - Modern runtime for JavaScript and TypeScript (requires --allow-all flag)"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["deno"]

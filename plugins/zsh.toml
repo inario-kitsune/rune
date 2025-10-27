@@ -1,0 +1,15 @@
+# Zsh - Z Shell
+# Extended Bourne shell with many improvements
+# Install: https://www.zsh.org/
+# - macOS: pre-installed (default shell since macOS Catalina)
+# - Ubuntu/Debian: sudo apt install zsh
+# - Fedora: sudo dnf install zsh
+
+name = "zsh"
+executor = "zsh"
+arg_template = ["{file}"]
+extensions = ["zsh"]
+description = "Zsh - Z Shell with extended features and customization"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["zsh"]

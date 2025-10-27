@@ -144,5 +144,8 @@ pub enum PluginCommands {
         name: String,
         #[arg(short = 'o', long)]
         output: Option<PathBuf>,
+        /// Output format (yaml or toml). Auto-detected from output file extension if not specified
+        #[arg(short = 'f', long, value_parser = ["yaml", "toml"])]
+        format: Option<String>,
     },
 }

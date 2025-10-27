@@ -1,0 +1,14 @@
+# Node.js - JavaScript runtime
+# This is the YAML version - see node.toml for TOML format
+name: node
+executor: node
+arg_template:
+  - "{file}"
+extensions:
+  - js
+  - mjs
+description: Node.js - JavaScript runtime for executing JS files
+author: Rune Plugin Templates
+version: 1.0.0
+requires:
+  - node

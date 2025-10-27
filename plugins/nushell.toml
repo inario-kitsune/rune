@@ -1,0 +1,15 @@
+# Nushell - A new type of shell
+# Modern shell with structured data pipelines
+# Install: https://www.nushell.sh/book/installation.html
+# - macOS: brew install nushell
+# - Cargo: cargo install nu
+# - Download: https://github.com/nushell/nushell/releases
+
+name = "nushell"
+executor = "nu"
+arg_template = ["{file}"]
+extensions = ["nu"]
+description = "Nushell - A new type of shell with structured data pipelines"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["nu"]

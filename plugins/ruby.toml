@@ -1,0 +1,15 @@
+# Ruby programming language plugin
+# A dynamic, open source programming language with a focus on simplicity and productivity
+# Install: https://www.ruby-lang.org/en/downloads/
+# - macOS: brew install ruby
+# - Ubuntu/Debian: sudo apt install ruby-full
+# - Fedora: sudo dnf install ruby
+
+name = "ruby"
+executor = "ruby"
+arg_template = ["{file}"]
+extensions = ["rb"]
+description = "Ruby interpreter - dynamic, open source programming language"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["ruby"]

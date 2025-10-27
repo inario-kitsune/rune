@@ -1,0 +1,14 @@
+# Bash - Bourne Again SHell
+# This is the YAML version - see bash.toml for TOML format
+name: bash
+executor: bash
+arg_template:
+  - "{file}"
+extensions:
+  - sh
+  - bash
+description: Bash shell interpreter - Bourne Again SHell
+author: Rune Plugin Templates
+version: 1.0.0
+requires:
+  - bash

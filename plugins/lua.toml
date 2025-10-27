@@ -1,0 +1,15 @@
+# Lua - Powerful, efficient, lightweight scripting language
+# Embeddable scripting language with simple syntax
+# Install: https://www.lua.org/download.html
+# - macOS: brew install lua
+# - Ubuntu/Debian: sudo apt install lua5.4
+# - Fedora: sudo dnf install lua
+
+name = "lua"
+executor = "lua"
+arg_template = ["{file}"]
+extensions = ["lua"]
+description = "Lua interpreter - lightweight, embeddable scripting language"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["lua"]

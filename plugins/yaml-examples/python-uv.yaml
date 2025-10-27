@@ -1,0 +1,14 @@
+# Python plugin using uv (ultra-fast Python package installer and runner)
+# This is the YAML version - see python-uv.toml for TOML format
+name: python-uv
+executor: uv
+arg_template:
+  - run
+  - "{file}"
+extensions:
+  - py
+description: Python script executor using uv - ultra-fast Python package installer and runner
+author: Rune Plugin Templates
+version: 1.0.0
+requires:
+  - uv

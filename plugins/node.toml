@@ -1,0 +1,15 @@
+# Node.js - JavaScript runtime built on Chrome's V8 engine
+# Run JavaScript outside the browser
+# Install: https://nodejs.org/
+# - macOS: brew install node
+# - Ubuntu/Debian: sudo apt install nodejs
+# - Fedora: sudo dnf install nodejs
+
+name = "node"
+executor = "node"
+arg_template = ["{file}"]
+extensions = ["js", "mjs"]
+description = "Node.js - JavaScript runtime for executing JS files"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["node"]

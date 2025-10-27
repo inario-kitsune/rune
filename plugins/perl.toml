@@ -1,0 +1,15 @@
+# Perl - Practical Extraction and Report Language
+# High-level, general-purpose, interpreted language
+# Install: https://www.perl.org/get.html
+# - macOS: pre-installed, or brew install perl
+# - Ubuntu/Debian: sudo apt install perl
+# - Fedora: sudo dnf install perl
+
+name = "perl"
+executor = "perl"
+arg_template = ["{file}"]
+extensions = ["pl", "pm"]
+description = "Perl interpreter - practical extraction and report language"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["perl"]

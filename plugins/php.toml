@@ -1,0 +1,15 @@
+# PHP - Hypertext Preprocessor
+# Popular server-side scripting language
+# Install: https://www.php.net/downloads
+# - macOS: brew install php
+# - Ubuntu/Debian: sudo apt install php-cli
+# - Fedora: sudo dnf install php-cli
+
+name = "php"
+executor = "php"
+arg_template = ["{file}"]
+extensions = ["php"]
+description = "PHP interpreter - server-side scripting language"
+author = "Rune Plugin Templates"
+version = "1.0.0"
+requires = ["php"]
